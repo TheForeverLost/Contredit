@@ -17,23 +17,41 @@
         
         <div class="container">
             <div class="col-lg-8 offset-lg-2" style="margin-top: 10%;">
-                <span class="badge badge-pill badge-info" id="participants">0</span> 
+                <div style="margin: 5px;">
+                    <span class="badge badge-pill badge-warning" id="Syncing">Not Synced</span>
+                    <span class="badge badge-pill badge-success" id="Synced">Synced</span> 
+                </div>
                 <textarea class="form-control dis" id="notepad" rows="10" disabled=""></textarea>
             </div>
 
         <script>
             var socket = io()
+            last_time = Date.now()
+
+            $("#Syncing").hide()
+            $("#Synced").hide()
             
+
             $(function () {
                 //For each typed character
                 $('#notepad').on('keyup',function(){
-                    var character= $('#notepad').val();
-                    socket.emit("content" , character)
+                    curr_time = Date.now()
+                    if ( curr_time-last_time > 5000 ) {
+                        var character= $('#notepad').val();
+                        socket.emit("content" , character)
+                        last_time = curr_time    
+                    }
+                    $("#Syncing").show()
+                    $("#Synced").hide()
+            
                 });
 
                 socket.on('server_character',function(content){
                     console.log("Server : "+content)
-                    $('#notepad').val(content); 
+                    $('#notepad').val(content);
+                    $("#Syncing").hide()
+                    $("#Synced").show()
+             
                 });
 
                 socket.on('sync_up',function(content){
