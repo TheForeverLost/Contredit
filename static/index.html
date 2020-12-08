@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Client</title>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"></script> 
+        <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">Contredit</a>
+                <input class="col-lg-4 mr-sm-2" type="text" id="Room" value="Default">
+                <button class="btn btn-primary my-2 my-sm-0" id="Connect">Connect</button>
+        </nav>
+        
+        <div class="container">
+            <div class="col-lg-8 offset-lg-2" style="margin-top: 10%;">
+                <span class="badge badge-pill badge-info" id="participants">0</span> 
+                <textarea class="form-control dis" id="notepad" rows="10" disabled=""></textarea>
+            </div>
+
+        <script>
+            var socket = io()
+            
+            $(function () {
+                //For each typed character
+                $('#notepad').on('keyup',function(){
+                    var character= $('#notepad').val();
+                    socket.emit("content" , character)
+                });
+
+                socket.on('server_character',function(content){
+                    console.log("Server : "+content)
+                    $('#notepad').val(content); 
+                });
+
+                socket.on('sync_up',function(content){
+                    var character= $('#notepad').val();
+                    socket.emit("content" , character)
+                });
+            });
+
+
+            $(document).ready(function () {
+                $('#notepad').attr('disabled', 'disabled');
+                $('#Connect').click(function () {
+                    
+                    socket.emit("room" , $('#Room').val() )
+                    $('#notepad').val("")
+                    $('#notepad').removeAttr('disabled');
+                });
+            });
+
+        </script>
+            
+        </div>
+
+    </body>
