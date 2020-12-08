@@ -21,7 +21,10 @@
                     <span class="badge badge-pill badge-warning" id="Syncing">Not Synced</span>
                     <span class="badge badge-pill badge-success" id="Synced">Synced</span> 
                 </div>
-                <textarea class="form-control dis" id="notepad" rows="10" disabled=""></textarea>
+                <textarea class="form-control dis" id="notepad" rows="10" disabled="" style="margin: 10px;"></textarea>
+                <div class="col-lg-2 offset-lg-10">
+                    <button class="btn btn-success my-2 my-sm-0" id="Sync">Sync</button>
+                </div>
             </div>
 
         <script>
@@ -69,6 +72,12 @@
                     $('#notepad').val("")
                     $('#notepad').removeAttr('disabled');
                 });
+
+                $('#Sync').click(function () {
+                    var character= $('#notepad').val();
+                    socket.emit("content" , character)
+                    last_time = curr_time 
+                })
             });
 
         </script>
